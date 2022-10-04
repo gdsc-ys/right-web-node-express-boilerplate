@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+
 const bcrypt = require("bcrypt");
 //login
 router.post("/login", async (req, res) => {
@@ -27,7 +28,6 @@ router.post("/login", async (req, res) => {
 //user crud
 router.post("/", async (req, res) => {
   const value = req.body;
-  console.log(value);
 
   const password = await bcrypt.hash(value.password, 12);
 

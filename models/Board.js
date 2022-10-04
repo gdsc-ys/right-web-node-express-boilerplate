@@ -31,7 +31,4 @@ module.exports = class Board extends Sequelize.Model {
       }
     );
   }
-  // static associate(db) {
-  //   db.Board.belongsTo(db.User, { foreignkEY: "user", targetKey: "id" });
-  // }
 };
