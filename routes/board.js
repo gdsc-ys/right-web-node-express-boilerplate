@@ -8,11 +8,11 @@ router.post("/", async (req, res) => {
   console.log(value);
   // res.status(200).send(value);
 
-  if (value.title && value.body && value.user_id) {
+  if (value.title && value.body && value.id) {
     Board.create({
       title: value.title,
       body: value.body,
-      user_id: value.user_id,
+      id: value.id,
     });
     return res.status(200).json(value);
   } else {
@@ -24,19 +24,35 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   const value = req.query;
-  console.log(req);
-  if (value.id) {
-    Board.findOne({
-      where: { id: value.id },
-    }).then((info) => {
+  if (value.findAll !== "true" && value.findAll !== "false") {
+    return res.status(400).json({
+      Code: "400 Bad Request",
+      Reason: "findALL param should be 'true' or 'false' ",
+    });
+  }
+
+  if (value.findAll === "true") {
+    Board.findAll().then((info) => {
       if (info === null) {
-        return res.status(404).json({ 결과: "그런 게시물 없어용" });
+        return res.status(404).json({ 결과: "게시물 없음 :(" });
       } else {
         return res.status(200).json(info);
       }
     });
   } else {
-    return res.status(400).json({ 실패: "아이디 정도는 보내주라" });
+    if (value.id) {
+      Board.findOne({
+        where: { id: value.id },
+      }).then((info) => {
+        if (info === null) {
+          return res.status(404).json({ 결과: "그런 게시물 없음" });
+        } else {
+          return res.status(200).json(info);
+        }
+      });
+    } else {
+      return res.status(400).json({ 실패: "아이디 정도는 보내주라" });
+    }
   }
 });
 
