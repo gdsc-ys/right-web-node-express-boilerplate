@@ -66,14 +66,16 @@ router.get("/", async (req, res) => {
 
 router.patch("/", async (req, res) => {
   const value = req.body;
+
   if (!value.id) {
     return res.status(400).json({ 실패: "아이디 보내줘" });
   }
 
   if (value.password) {
+    const password = await bcrypt.hash(value.password, 12);
     User.update(
       {
-        password: value.password,
+        password: password,
       },
       {
         where: {
