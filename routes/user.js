@@ -49,18 +49,48 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   const value = req.query;
   console.log(req);
-  if (value.id) {
+  if (value.id && value.email) {
     User.findOne({
-      where: { id: value.id },
+      where: {
+        id: value.id,
+        email: value.email,
+      },
     }).then((info) => {
       if (info === null) {
-        return res.status(404).json({ 결과: "그런 사람 없음" });
+        return res.status(404).json({ 결과: "그런 id와 email 가진 사람 없음" });
+      } else {
+        return res.status(200).json(info);
+      }
+    });
+  } else if (value.id) {
+    User.findOne({
+      where: {
+        id: value.id,
+      },
+    }).then((info) => {
+      if (info === null) {
+        return res.status(404).json({ 결과: "그런 id 가진 사람 없음" });
+      } else {
+        return res.status(200).json(info);
+      }
+    });
+  } else if (value.email) {
+    User.findOne({
+      where: {
+        email: value.email,
+      },
+    }).then((info) => {
+      if (info === null) {
+        return res.status(404).json({ 결과: "그런 email 가진 사람 없음" });
       } else {
         return res.status(200).json(info);
       }
     });
   } else {
-    return res.status(400).json({ 실패: "아이디 정도는 보내주라" });
+    return res.status(400).json({
+      code: "400 Bad Request",
+      Reason: "Query should include at least id or email.",
+    });
   }
 });
 
