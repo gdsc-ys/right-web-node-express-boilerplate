@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Board = require("../models/Board");
+const User = require("../models/User")
 
 //user crud
 router.post("/", async (req, res) => {
@@ -9,12 +10,20 @@ router.post("/", async (req, res) => {
   // res.status(200).send(value);
 
   if (value.title && value.body && value.user_id) {
-    Board.create({
-      title: value.title,
-      body: value.body,
-      user_id: value.user_id,
-    });
-    return res.status(200).json(value);
+    User.findOne({
+      where: {id: value.user_id},
+    }).then((info)=>{
+      if(info === null){
+        return res.status(404).json({ 결과: "그런 유저 없어용" });
+      } else {
+        Board.create({
+          title: value.title,
+          body: value.body,
+          user_id: value.user_id,
+        });
+        return res.status(200).json(value);
+      }
+    })
   } else {
     return res
       .status(400)
