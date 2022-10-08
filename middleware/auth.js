@@ -1,21 +1,16 @@
-const authUtil = {
-  checkToken: async (req, res, next) => {
-    var token = req.headers.token;
-    // 토큰 없음
-    if (!token) return res.json(util.fail(CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
-    // decode
-    const user = await jwt.verify(token);
-    // 유효기간 만료
-    if (user === TOKEN_EXPIRED)
-      return res.json(util.fail(CODE.UNAUTHORIZED, MSG.EXPIRED_TOKEN));
-    // 유효하지 않는 토큰
-    if (user === TOKEN_INVALID)
-      return res.json(util.fail(CODE.UNAUTHORIZED, MSG.INVALID_TOKEN));
-    if (user.idx === undefined)
-      return res.json(util.fail(CODE.UNAUTHORIZED, MSG.INVALID_TOKEN));
-    req.idx = user.idx;
-    next();
-  },
-};
+const jwt = require("../services/token");
 
-module.exports = authUtil;
+module.exports = async (req, res, next) => {
+  const cookie = req.get("cookie");
+  const token = cookie.split("=")[1];
+  jwt.verify(token).then((decode) => {
+    if (decode === "TOKEN_EXPIRED") {
+      res.status(401).json({ fail: "TOKEN_EXPIRED" });
+    } else if (decode === "TOKEN_INVALID") {
+      res.status(401).json({ fail: "TOKEN_INVALID" });
+    } else {
+      req.payload = { id: decode.id, email: decode.email };
+      next();
+    }
+  });
+};

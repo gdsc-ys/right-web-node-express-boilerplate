@@ -6,8 +6,10 @@ const token = jwt.sign(
   (err, token) => {
     if (err) {
       console.log(err);
-      return;
+      return err;
     }
-    console.log(token);
   }
 );
+console.log(token);
+// const result = jwt.verify(token);
+// console.log(result);

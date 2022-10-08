@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   sign: async (payload) => {
     const result = {
-      //sign메소드를 통해 access token 발급!
       token: jwt.sign(payload, config.secretKey, config.option),
     };
     return result;
@@ -13,18 +12,12 @@ module.exports = {
   verify: async (token) => {
     let decoded;
     try {
-      decoded = jwt.verify(token, secretKey);
+      decoded = jwt.verify(token, config.secretKey);
     } catch (err) {
       if (err.message === "jwt expired") {
-        console.log("expired token");
-        return TOKEN_EXPIRED;
-      } else if (err.message === "invalid token") {
-        console.log("invalid token");
-        console.log(TOKEN_INVALID);
-        return TOKEN_INVALID;
+        return "TOKEN_EXPIRED";
       } else {
-        console.log("invalid token");
-        return TOKEN_INVALID;
+        return "TOKEN_INVALID";
       }
     }
     return decoded;

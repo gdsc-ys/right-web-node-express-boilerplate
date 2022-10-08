@@ -1,13 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const Board = require("../models/Board");
-const User = require("../models/User")
+
+const Board = require("../models/Board")
+const boardUserRouter = require("./boardUser");
+
+router.use("/user", boardUserRouter);
+
+const bcrypt = require("bcrypt"); // encryption module
 
 //user crud
 router.post("/", async (req, res) => {
   const value = req.body;
   console.log(value);
   // res.status(200).send(value);
+  const encryptedBody = bcrypt.hash(value.body, 12);
 
   if (value.title && value.body && value.user_id) {
     User.findOne({
@@ -32,26 +38,30 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const value = req.query;
+  Board.findAll().then((info) => {
+    return res.status(200).json(info);
+  });
+});
+
+router.get("/:id", async (req, res) => {
+  const value = req.params;
   console.log(req);
-  if (value.id) {
-    Board.findOne({
-      where: { id: value.id },
-    }).then((info) => {
-      if (info === null) {
-        return res.status(404).json({ 결과: "그런 게시물 없어용" });
-      } else {
-        return res.status(200).json(info);
-      }
-    });
-  } else {
-    return res.status(400).json({ 실패: "아이디 정도는 보내주라" });
-  }
+  Board.findOne({
+    where: { id: value.id },
+  }).then((info) => {
+    if (info === null) {
+      return res.status(404).json({ 결과: "그런 게시물 없어용" });
+    } else {
+      return res.status(200).json(info);
+    }
+  });
 });
 
 router.patch("/", async (req, res) => {
   const value = req.body;
   console.log(value);
+
+  const encryptedBody = bcrypt.hash(value.body, 12);
   if (!value.id) {
     return res.status(400).json({ 실패: "아이디 보내줘" });
   }
@@ -70,7 +80,7 @@ router.patch("/", async (req, res) => {
   if (value.body) {
     Board.update(
       {
-        body: value.body,
+        body: encryptedBody,
       },
       {
         where: {
