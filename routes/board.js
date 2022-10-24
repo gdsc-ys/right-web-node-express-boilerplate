@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Board = require("../models/Board");
+const User = require("../models/User");
 const auth = require("../middleware/auth");
 
 router.post("/", auth, async (req, res) => {
@@ -112,11 +113,14 @@ router.delete("/:id", auth, async (req, res) => {
 router.get("/user/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
   console.log("어엄...");
-  Board.findAll({ where: { user_id: user_id } }).then((info) => {
-    if (info.length === 0) {
-      return res.status(200).json("해당 유저가 없음");
+  User.findOne({ where: { id: user_id } }).then((info) => {
+    if (info == null) {
+      return res.status(400).json({ 실패: "그런 유저 없음" });
+    } else {
+      Board.findAll({ where: { user_id: user_id } }).then((info) => {
+        return res.status(200).json(info);
+      });
     }
-    return res.status(200).json(info);
   });
 });
 
