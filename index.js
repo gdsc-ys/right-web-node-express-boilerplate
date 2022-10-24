@@ -7,9 +7,6 @@ const morgan = require("morgan");
 
 const { sequelize } = require("./models");
 
-const Board = require("./models/Board");
-const User = require("./models/User");
-
 const indexRouter = require("./routes");
 
 //db 연결 부분

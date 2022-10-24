@@ -27,7 +27,6 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const value = req.params;
-  console.log(req);
   Board.findOne({
     where: { id: value.id },
   }).then((info) => {
@@ -40,11 +39,9 @@ router.get("/:id", async (req, res) => {
 });
 
 router.patch("/:id", auth, async (req, res) => {
-  console.log("요청들어옴");
   const value = req.body;
   const id = req.params.id;
   const user_id = req.payload.id;
-  console.log("value", value, "id", id, "user_id", user_id);
   Board.findOne({
     where: { id: id },
   }).then((info) => {
@@ -85,11 +82,9 @@ router.patch("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   const id = req.params.id;
   const user_id = req.payload.id;
-  console.log(id);
   Board.findOne({
     where: { id: id },
   }).then((info) => {
-    console.log(info);
     if (info === null) {
       return res.status(400).json({ 결과: "그런 게시물 없어용" });
     }
@@ -112,7 +107,6 @@ router.delete("/:id", auth, async (req, res) => {
 
 router.get("/user/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
-  console.log("어엄...");
   User.findOne({ where: { id: user_id } }).then((info) => {
     if (info == null) {
       return res.status(400).json({ 실패: "그런 유저 없음" });

@@ -9,7 +9,6 @@ const bcrypt = require("bcrypt");
 router.post("/login", async (req, res) => {
   const value = req.body;
   if (value.id) {
-    console.log(value.id);
     User.findOne({
       where: { id: value.id },
     }).then((info) => {
@@ -18,9 +17,7 @@ router.post("/login", async (req, res) => {
       } else {
         const match = bcrypt.compareSync(value.password, info.password);
         if (match) {
-          console.log("아이디:", info.id, "이메일:", info.email);
           jwt.sign({ id: info.id, email: info.email }).then((token) => {
-            console.log(token.token);
             return res
               .status(200)
               .cookie("token", token.token, { httpOnly: true })

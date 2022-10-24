@@ -36,7 +36,6 @@ router.get("/", auth, async (req, res) => {
     } else {
       delete info.dataValues.password;
       delete info.dataValues._previousDataValues;
-      console.log(info);
       return res.status(200).json(info);
     }
   });
