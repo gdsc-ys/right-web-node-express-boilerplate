@@ -1,7 +1,10 @@
-const jwt = require("../services/token");
+const jwt = require("../utils/token");
 
 module.exports = async (req, res, next) => {
   const cookie = req.get("cookie");
+  if (!cookie) {
+    res.status(401).json({ fail: "NO_TOKEN" });
+  }
   const token = cookie.split("=")[1];
   jwt.verify(token).then((decode) => {
     if (decode === "TOKEN_EXPIRED") {

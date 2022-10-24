@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      .wrapper {
+        width: 720px;
+        min-height: 500px;
+      }
+      .box {
+        width: 100px;
+        height: 100px;
+      }
+      .display_block {
+        display: block;
+      }
+      .display_inline {
+        display: inline;
+      }
+      .display_inline-block {
+        display: inline-block;
+      }
+      .display_flex {
+        display: flex;
+      }
+
+      .position_static {
+        position: static;
+      }
+      .position_relative {
+        position: relative;
+      }
+      .position_absolute {
+        position: absolute;
+      }
+      .position_fixed {
+        position: fixed;
+      }
+      .position_sticky {
+        position: sticky;
+      }
+
+      .flex_flex-direction {
+        /* 한 줄의 글을 작성하는 방향대로 */
+        flex-direction: row;
+
+        /* <row>처럼, 대신 역방향 */
+        /* flex-direction: row-reverse; */
+
+        /* 글 여러 줄이 쌓이는 방향대로 */
+        /* flex-direction: column; */
+
+        /* <column>처럼, 대신 역방향 */
+        /* flex-direction: column-reverse; */
+      }
+      .flex_justify-content {
+        /* justify-content: start; */
+        /* justify-content: center; */
+        /* justify-content: space-between; */
+        /* justify-content: space-around; */
+        /* justify-content: space-evenly; */
+      }
+      .flex_align-items {
+        /* align-items: normal; */
+        /* align-items: stretch; */
+        align-items: center;
+        align-items: start;
+        align-items: end;
+        align-items: flex-start;
+        align-items: flex-end;
+      }
+    </style>
+    <div class="box display_block"></div>
+    <div class="box display_block"></div>
+  </body>
+</html>

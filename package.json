@@ -17,5 +17,8 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.23.2",
     "sequelize-cli": "^6.5.1"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }

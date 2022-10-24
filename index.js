@@ -3,6 +3,8 @@
 const express = require("express");
 const app = express();
 
+const morgan = require("morgan");
+
 const { sequelize } = require("./models");
 
 const Board = require("./models/Board");
@@ -22,25 +24,18 @@ sequelize
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 
 //서버 테스트
 app.get("/", (req, res) => {
   return res.send("this is api server");
 });
 
-//db 확인용
-app.get("/show/user", async (req, res) => {
-  const all = await User.findAll();
-  return res.status(200).send(all);
-});
-
-app.get("/show/board", async (req, res) => {
-  const all = await Board.findAll();
-  return res.status(200).send(all);
-});
-
 //라우터
 app.use("/api", indexRouter);
+app.use(function (req, res) {
+  return res.status(404).json({ fail: "request not found" });
+});
 
 process.on("uncaughtException", (err) => {
   console.error(err);

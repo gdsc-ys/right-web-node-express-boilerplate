@@ -23,13 +23,3 @@ module.exports = {
     return decoded;
   },
 };
-
-// function generateToken(payload) {
-//   return new Promise((resolve, reject) => {
-//     jwt.sign(payload, config.secretKey, config.option, (error, token) => {
-//       if (error) reject(error);
-//       resolve(token);
-//     });
-//   });
-// }
-// exports.generateToken = generateToken;

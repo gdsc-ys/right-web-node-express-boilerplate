@@ -1,39 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const Board = require("../models/Board")
-const boardUserRouter = require("./boardUser");
+const Board = require("../models/Board");
+const auth = require("../middleware/auth");
 
-router.use("/user", boardUserRouter);
-
-const bcrypt = require("bcrypt"); // encryption module
-
-//user crud
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
+  const id = req.payload.id;
   const value = req.body;
-  console.log(value);
-  // res.status(200).send(value);
-  const encryptedBody = bcrypt.hash(value.body, 12);
 
-  if (value.title && value.body && value.user_id) {
-    User.findOne({
-      where: {id: value.user_id},
-    }).then((info)=>{
-      if(info === null){
-        return res.status(404).json({ 결과: "그런 유저 없어용" });
-      } else {
-        Board.create({
-          title: value.title,
-          body: value.body,
-          user_id: value.user_id,
-        });
-        return res.status(200).json(value);
-      }
-    })
-  } else {
-    return res
-      .status(400)
-      .json({ 실패: "쿼리에 타이틀 바디 아이디 다 넣어주세요" });
+  if (value.title && value.body) {
+    Board.create({
+      title: value.title,
+      body: value.body,
+      user_id: id,
+    });
+    return res.status(200).json(value);
   }
 });
 
@@ -50,65 +31,93 @@ router.get("/:id", async (req, res) => {
     where: { id: value.id },
   }).then((info) => {
     if (info === null) {
-      return res.status(404).json({ 결과: "그런 게시물 없어용" });
+      return res.status(400).json({ 결과: "그런 게시물 없어용" });
     } else {
       return res.status(200).json(info);
     }
   });
 });
 
-router.patch("/", async (req, res) => {
+router.patch("/:id", auth, async (req, res) => {
+  console.log("요청들어옴");
   const value = req.body;
-  console.log(value);
-
-  const encryptedBody = bcrypt.hash(value.body, 12);
-  if (!value.id) {
-    return res.status(400).json({ 실패: "아이디 보내줘" });
-  }
-  if (value.title) {
-    Board.update(
-      {
-        title: value.title,
-      },
-      {
-        where: {
-          id: value.id,
+  const id = req.params.id;
+  const user_id = req.payload.id;
+  console.log("value", value, "id", id, "user_id", user_id);
+  Board.findOne({
+    where: { id: id },
+  }).then((info) => {
+    if (info === null) {
+      return res.status(400).json({ 결과: "그런 게시물 없어용" });
+    }
+    if (info.user_id !== user_id) {
+      return res.status(403).json({ 결과: "권한이 없음" });
+    }
+    if (value.title) {
+      Board.update(
+        {
+          title: value.title,
         },
-      }
-    );
-  }
-  if (value.body) {
-    Board.update(
-      {
-        body: encryptedBody,
-      },
-      {
-        where: {
-          id: value.id,
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+    }
+    if (value.body) {
+      Board.update(
+        {
+          body: value.body,
         },
-      }
-    );
-  }
-  return res.status(200).json({ 성공: "뭘 하긴했다" });
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+    }
+    return res.status(200).json({ 결과: "수정 성공함~" });
+  });
 });
 
-router.delete("/", async (req, res) => {
-  const value = req.body;
-  if (value.id) {
+router.delete("/:id", auth, async (req, res) => {
+  const id = req.params.id;
+  const user_id = req.payload.id;
+  console.log(id);
+  Board.findOne({
+    where: { id: id },
+  }).then((info) => {
+    console.log(info);
+    if (info === null) {
+      return res.status(400).json({ 결과: "그런 게시물 없어용" });
+    }
+    if (info.user_id !== user_id) {
+      return res.status(403).json({ 결과: "권한이 없음" });
+    }
     Board.destroy({
       where: {
-        id: value.id,
+        id: id,
       },
     }).then((info) => {
       if (info === 0) {
-        return res.status(200).json({ 실패: "그런 게시글 없음" });
+        return res.status(200).json({ 실패: "해당 게시글 존재 안함" });
       } else {
-        return res.status(200).json(info);
+        return res.status(200).json({ 성공: "삭제" });
       }
     });
-  } else {
-    return res.status(400).json({ 실패: "글 번호 정도는 보내주라" });
-  }
+  });
+});
+
+router.get("/user/:user_id", async (req, res) => {
+  const user_id = req.params.user_id;
+  console.log("어엄...");
+  Board.findAll({ where: { user_id: user_id } }).then((info) => {
+    if (info.length === 0) {
+      return res.status(200).json("해당 유저가 없음");
+    }
+    return res.status(200).json(info);
+  });
 });
 
 module.exports = router;

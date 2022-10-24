@@ -1,8 +1,7 @@
 {
   "env": {
     "node": true,
-    "esnext": true,
-    "react": true
+    "esnext": true
   },
   "rules": {
     "array-bracket-spacing": [2, "never"],
