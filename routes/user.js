@@ -123,14 +123,28 @@ router.get("/part/:part", async (req, res) => {
 
 router.get("/check", async (req, res) => {
   const id = req.query.id;
-  User.findOne({
-    where: { id: id },
-  }).then((info) => {
-    if (info === null) {
-      return res.status(200).json({ 결과: "생성 가능한 아이디" });
-    } else {
-      return res.status(400).json({ 결과: "존재하는 아이디" });
-    }
-  });
+  const email = req.query.email;
+  if (id) {
+    User.findOne({
+      where: { id: id },
+    }).then((info) => {
+      if (info === null) {
+        return res.status(200).json({ 결과: "생성 가능한 아이디" });
+      } else {
+        return res.status(400).json({ 결과: "존재하는 아이디" });
+      }
+    });
+  }
+  if (email) {
+    User.findOne({
+      where: { email: email },
+    }).then((info) => {
+      if (info === null) {
+        return res.status(200).json({ 결과: "생성 가능한 이메일" });
+      } else {
+        return res.status(400).json({ 결과: "존재하는 이메일" });
+      }
+    });
+  }
 });
 module.exports = router;
