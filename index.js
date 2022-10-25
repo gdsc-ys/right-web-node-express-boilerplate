@@ -23,13 +23,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-//서버 테스트
-app.get("/", (req, res) => {
-  return res.send("this is api server");
-});
+app.use("/", indexRouter);
 
-//라우터
-app.use("/api", indexRouter);
 app.use(function (req, res) {
   return res.status(404).json({ fail: "request not found" });
 });
