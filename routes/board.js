@@ -118,4 +118,9 @@ router.get("/user/:user_id", async (req, res) => {
   });
 });
 
+router.get("/part/:part", async (req, res) => {
+  return res.status(200).json({ 결과: "요청 들어옴" });
+  //조인을 모르겠음 죽겠다
+});
+
 module.exports = router;

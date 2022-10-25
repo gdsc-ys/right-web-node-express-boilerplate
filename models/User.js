@@ -19,6 +19,10 @@ module.exports = class User extends Sequelize.Model {
           allowNull: false,
           unique: true,
         },
+        part: {
+          type: Sequelize.STRING(20),
+          allowNull: false,
+        },
         role: {
           type: Sequelize.INTEGER,
           default: 0,

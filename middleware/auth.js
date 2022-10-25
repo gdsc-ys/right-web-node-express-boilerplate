@@ -12,6 +12,7 @@ module.exports = async (req, res, next) => {
     } else if (decode === "TOKEN_INVALID") {
       res.status(401).json({ fail: "TOKEN_INVALID" });
     } else {
+      console.log(decode.id, decode.email);
       req.payload = { id: decode.id, email: decode.email };
       next();
     }
